@@ -1,6 +1,6 @@
 #include <arpa/inet.h>
-#include <netinet/in.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -9,6 +9,10 @@
 
 int main() {
   char buffer[BUFFER_SIZE];
+  char resp[] = "HTTP/1.0 200 OK\r\n"
+                "Server: webserver-c\r\n"
+                "Content-type: text/html\r\n\r\n"
+                "<html>hello, world</html>\r\n";
 
   // Create a socket
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -33,6 +37,7 @@ int main() {
   }
   printf("socket successfully bound to address\n");
 
+  // Listen for incoming connections
   if (listen(sockfd, SOMAXCONN) != 0) {
     perror("webserver (listen)");
     return 1;
@@ -53,6 +58,13 @@ int main() {
     int valread = read(newsockfd, buffer, BUFFER_SIZE);
     if (valread < 0) {
       perror("webserver (read)");
+      continue;
+    }
+
+    // Write from the socket
+    int valwrite = write(newsockfd, resp, strlen(resp));
+    if (valwrite < 0) {
+      perror("webserver (write)");
       continue;
     }
 
