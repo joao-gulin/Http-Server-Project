@@ -73,6 +73,12 @@ int main() {
       continue;
     }
 
+    // Read the request
+    char method[BUFFER_SIZE], uri[BUFFER_SIZE], version[BUFFER_SIZE];
+    sscanf(buffer, "%s %s %s", method, uri, version);
+    printf("[%s:%u] %s %s &s\n", inet_ntoa(client_addr.sin_addr),
+           ntohs(client_addr.sin_port), method, version, uri);
+
     // Write from the socket
     int valwrite = write(newsockfd, resp, strlen(resp));
     if (valwrite < 0) {
