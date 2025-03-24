@@ -2,6 +2,7 @@
 #include <netinet/in.h>
 #include <stdio.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 #define PORT 8080
 int main() {
@@ -33,6 +34,19 @@ int main() {
     return 1;
   }
   printf("server listening for connections \n");
+
+  for (;;) {
+    // Accept incoming connections
+    int newsockfd = accept(sockfd, (struct sockaddr *)&host_addr,
+                           (socklen_t *)&host_addrlen);
+    if (newsockfd < 0) {
+      perror("webserver (accept)");
+      continue;
+    }
+    printf("connection accepted\n");
+
+    close(newsockfd);
+  }
 
   return 0;
 }
