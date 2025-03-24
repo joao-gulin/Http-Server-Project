@@ -27,5 +27,12 @@ int main() {
     return 1;
   }
   printf("socket successfully bound to address\n");
+
+  if (listen(sockfd, SOMAXCONN) != 0) {
+    perror("webserver (listen)");
+    return 1;
+  }
+  printf("server listening for connections \n");
+
   return 0;
 }
